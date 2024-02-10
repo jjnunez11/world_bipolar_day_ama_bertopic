@@ -16,12 +16,11 @@ class RedditDocProcessor(object):
             self.f = None
             self.data = None
         else:
-            self.f = os.path.join(self.raw_data_dir, FILENAME_DICT(args.years))
+            self.f = os.path.join(self.raw_data_dir, FILENAME_DICT[args.years])
             self.data = pd.read_csv(self.f)
 
         self.type = args.doc_types
-
-        print("hello!")
+        self.years = args.years
 
     def process_docs(self):
 
@@ -45,11 +44,17 @@ class RedditDocProcessor(object):
                                   (self.data['Author'] != 'IAmAModBot') &
                                   (self.data['Author'] != 'CREST_BD')]
 
+        # Remove quotation marks from the text in the Comment column
+        filtered_data['Comment'] = filtered_data['Comment'].str.replace('"', '')
+
+        # Keep only the Comment column, but not the header
+        filtered_data = filtered_data["Comment"]
+
         # Construct output filename
         output_filename = f"{self.type}_comments_{self.years}.csv"
-        output_path = os.path.join(self.processed_dir, output_filename)
+        output_path = os.path.join(self.processed_data_dir, output_filename)
 
         # Write filtered data to CSV
-        filtered_data.to_csv(output_path, index=False)
+        filtered_data.to_csv(output_path, index=False, header=False)
 
         print(f"Filtered data saved to: {output_path}")

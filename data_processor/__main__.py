@@ -9,7 +9,9 @@ if __name__ == "__main__":
     args = get_args()
     data_dir = path.join(args.project_dir, r"./data/")
 
-    p = RedditDocProcessor(data_dir, args)
+    p = RedditDocProcessor(args, data_dir)
+
+    p.process_docs()
 
     print(f"Finished preprocessing {args.doc_types} documents from years: {args.doc_types}")
 
