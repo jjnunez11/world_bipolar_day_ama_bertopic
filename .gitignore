@@ -163,3 +163,4 @@ cython_debug/
 /.idea/inspectionProfiles/profiles_settings.xml
 /.idea/vcs.xml
 /.idea/wolrd_bipolar_day_ama_bertopic.iml
+/run_bertopic/openai_api_key.py
