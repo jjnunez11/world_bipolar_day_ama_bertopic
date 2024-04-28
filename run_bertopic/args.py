@@ -15,6 +15,9 @@ def get_args():
     parser.add_argument('--openai-flag', default='', type=str, choices=['', "send_to_openai"],
                         help="String should be send_to_openai if this is desired for topic summarization")
 
+    parser.add_argument('--manual',  default='', type=str, choices=['', "yes"],
+                        help="Use manually filtered participant posts")
+
     parser.add_argument('--n-top-topics', default=20, type=int,
                         help='Number of top topics to extract for final df')
 

@@ -41,7 +41,7 @@ class RunBERTopic:
     def fit_topic_model(self):
 
         # Prepare UMAP
-        umap_model = UMAP(n_neighbors=15, n_components=2, min_dist=0.1, metric='cosine', random_state=42)
+        umap_model = UMAP(n_neighbors=15, n_components=5, metric='cosine', random_state=42) #min_dist=0.1
 
         print("UMAP prepared!")
 
@@ -97,7 +97,7 @@ class RunBERTopic:
             vectorizer_model=vectorizer_model,
             representation_model=representation_model,
             top_n_words=10,
-            nr_topics=11,  # The first one is the outlier topic, so need 21
+            #nr_topics=11,  # The first one is the outlier topic, so need 21
             verbose=True
         )
         print('About to fit')

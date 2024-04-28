@@ -10,7 +10,11 @@ if __name__ == '__main__':
     results_dir = os.path.join(args.project_dir, "results")
     data_dir = os.path.join(args.project_dir, r"./data/processed")
 
-    filename_to_load = f'{args.doc_types}_{args.years}.csv'
+    if args.manual == "yes":
+        filename_to_load = f'{args.doc_types}_{args.years}_manually_filtered.csv'
+    else:
+        filename_to_load = f'{args.doc_types}_{args.years}.csv'
+
     f = os.path.join(data_dir, filename_to_load)
 
     print('Starting BERTopic analysis of Reddit AMA comments')
