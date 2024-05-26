@@ -71,7 +71,8 @@ class RunBERTopic:
 
         Based on the information above, extract a short but highly descriptive topic label of at most 5 words. Make 
         sure it is in the following format: topic: <topic label> """
-        openai_model = OpenAI(model="gpt-3.5-turbo", exponential_backoff=True, chat=True, prompt=prompt)
+        #openai_model = OpenAI(model="gpt-3.5-turbo", exponential_backoff=True, chat=True, prompt=prompt)
+        openai_model = OpenAI(model="gpt-4o", exponential_backoff=True, chat=True, prompt=prompt)
 
         if self.args.openai_flag == "send_to_openai":
 
@@ -147,23 +148,6 @@ class RunBERTopic:
         self.top_topics = topic_df
         print(topic_df)
 
-        # Write out the DataFrame to a new file
-        args = self.args
-        topic_df_filename = os.path.join(self.results_dir, f"cleaned_topics_{args.doc_types}_{args.years}.csv")
-        topic_df.to_csv(topic_df_filename)
-
-        print(f'Printed topic_df to: {topic_df_filename}')
-
-        # Get and print document info DataFrame
-        doc_info_df = self.topic_model.get_document_info(self.documents)
-        print(doc_info_df)
-
-        # Write out the document info DataFrame to a new file
-        doc_info_filename = os.path.join(self.results_dir, f"document_info_{args.doc_types}_{args.years}.csv")
-        doc_info_df.to_csv(doc_info_filename)
-
-        print(f'Printed document_info_df to: {doc_info_filename}')
-
         # Extract the top n representative documents
 
         # Prepare your documents to be used in a dataframe
@@ -178,51 +162,17 @@ class RunBERTopic:
             nr_repr_docs=self.n_top_docs
         )
 
-        # Check lengths of all arrays
-        len_mappings = len(repr_docs_mappings)
-        len_docs = len(repr_docs)
-        len_indices = len(repr_docs_indices)
-        len_ids = len(repr_docs_ids)
+        # Define file path for the combined CSV
+        topics_docs_filename = os.path.join(self.results_dir,
+                                            f"topics_and_documents_{self.args.doc_types}_{self.args.years}.csv")
 
-        print(f"Lengths - Mappings: {len_mappings}, Docs: {len_docs}, Indices: {len_indices}, IDs: {len_ids}")
-
-        """
-        if len_mappings == len_docs == len_indices == len_ids:
-            # Combine the outputs into a single DataFrame
-            repr_docs_df = pd.DataFrame({
-                'Document': repr_docs,
-                'Mapping': repr_docs_mappings,
-                'Index': repr_docs_indices,
-                'ID': repr_docs_ids
-            })
-
-            # Write out the combined DataFrame to a new file
-            top_n_docs_filename = os.path.join(self.results_dir,
-                                               f"top_{self.n_top_docs}_docs_{args.doc_types}_{args.years}.csv")
-            repr_docs_df.to_csv(top_n_docs_filename, index=False)
-
-            print(f'Printed top n docs to: {top_n_docs_filename}')
-        else:
-            print(
-                "Error: The lengths of the arrays are not equal. Please check the output of _extract_representative_docs.")
-        """
-
-        # Write out the metadata to a new file without using pandas
-        meta_filename = os.path.join(self.results_dir, f"top_{self.n_top_docs}_meta_{args.doc_types}_{args.years}.csv")
-        with open(meta_filename, mode='w', newline='', encoding='utf-8') as file:
+        # Create a combined CSV for topics and documents, filtering out Topic -1
+        with open(topics_docs_filename, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
-            writer.writerow(['Mapping', 'Index', 'ID'])  # Write the header
-            for mapping, index, doc_id in zip(repr_docs_mappings, repr_docs_indices, repr_docs_ids):
-                writer.writerow([mapping, index, doc_id])
+            writer.writerow(['Topic', 'Document'])  # Write the header
+            for mapping, indices in zip(repr_docs_mappings, repr_docs_indices):
+                if mapping != -1:  # Filter out Topic -1
+                    for index in indices:
+                        writer.writerow([mapping, repr_docs[index]])
 
-        print(f'Printed top n docs metadata to: {meta_filename}')
-
-        # Create a CSV file for the documents
-        docs_filename = os.path.join(self.results_dir, f"top_{self.n_top_docs}_docs_{args.doc_types}_{args.years}.csv")
-        with open(docs_filename, mode='w', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)
-            writer.writerow(['Document'])  # Write the header
-            for doc in repr_docs:
-                writer.writerow([doc])
-
-        print(f'Printed top n docs to: {docs_filename}')
+        print(f'Printed topics and documents to: {topics_docs_filename}')
