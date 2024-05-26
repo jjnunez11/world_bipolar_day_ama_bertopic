@@ -21,6 +21,9 @@ def get_args():
     parser.add_argument('--n-top-topics', default=20, type=int,
                         help='Number of top topics to extract for final df')
 
+    parser.add_argument('--n-top-docs', default=10, type=int,
+                        help='Number of top sentences to include in the output')
+
     parser.add_argument('--project-dir', default="./", help="Path to root of project")
 
     # parser.add_argument('--results-dir', default=os.path.join(r'C:\Users\jjnunez\PycharmProjects\scar_nlp_psych', 'results'))
