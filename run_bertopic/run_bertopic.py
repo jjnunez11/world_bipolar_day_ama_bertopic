@@ -71,8 +71,8 @@ class RunBERTopic:
 
         Based on the information above, extract a short but highly descriptive topic label of at most 5 words. Make 
         sure it is in the following format: topic: <topic label> """
-        #openai_model = OpenAI(model="gpt-3.5-turbo", exponential_backoff=True, chat=True, prompt=prompt)
-        openai_model = OpenAI(model="gpt-4o", exponential_backoff=True, chat=True, prompt=prompt)
+        openai_model = OpenAI(model="gpt-3.5-turbo", exponential_backoff=True, chat=True, prompt=prompt)
+        #openai_model = OpenAI(model="gpt-4o", exponential_backoff=True, chat=True, prompt=prompt)
 
         if self.args.openai_flag == "send_to_openai":
 
@@ -164,7 +164,7 @@ class RunBERTopic:
 
         # Define file path for the combined CSV
         topics_docs_filename = os.path.join(self.results_dir,
-                                            f"topics_and_documents_{self.args.doc_types}_{self.args.years}.csv")
+                                            f"top_{self.n_top_docs}_{self.args.doc_types}_{self.args.years}.csv")
 
         # Create a combined CSV for topics and documents, filtering out Topic -1
         with open(topics_docs_filename, mode='w', newline='', encoding='utf-8') as file:
